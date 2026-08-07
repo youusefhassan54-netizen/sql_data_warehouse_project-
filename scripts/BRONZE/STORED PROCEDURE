@@ -1,0 +1,166 @@
+CREATE OR ALTER PROCEDURE BRONZE.LOAD_BRONZE AS 
+BEGIN 
+    DECLARE @START_TIME DATETIME ,@END_TIME DATETIME ;
+    BEGIN TRY 
+            PRINT'====================';
+            PRINT'LOADING BRONZE LAYER';
+            PRINT'====================';
+    /*================================================*/
+      PRINT'------------------------------------------';
+      PRINT'LOADING BRONZE  CRM TABLES';
+      PRINT'------------------------------------------';
+    /*================================================*/
+   -------
+   SET @START_TIME = GETDATE();
+   -------
+   PRINT '>>> TRUNCATIAG TABLE:BRONZE.CRM_CUST_INFO';
+     --------------------------------------
+     truncate table  [bronze].[crm_cust_info]
+        ---------------------------------------------
+    PRINT '>>> INSERTING DATA INTO:BRONZE.CRM_CUST_INFO';
+    ------------------------------------------------
+            BULK INSERT [bronze].[crm_cust_info]
+        FROM 'C:\Users\hp\Downloads\sql-data-warehouse-project\sql-data-warehouse-project\datasets\source_crm\cust_info.CSV'
+         WITH (
+         FIRSTROW = 2 ,
+         FIELDTERMINATOR = ',',
+         TABLOCK
+         );
+         -----------
+         SET @END_TIME = GETDATE();
+         PRINT'LOAD DURATION:'+ CAST(DATEDIFF(SECOND,@START_TIME,@END_TIME)AS NVARCHAR)+'SECONDS';
+         PRINT '==============================================================================================================================================='
+         -----------
+         /*======================================================================================================================*/
+       ---------
+       SET @START_TIME = GETDATE();
+       ---------
+       PRINT '>>> TRUNCATIAG TABLE:BRONZE.CRM_PRD_INFO';
+     --------------------------------------
+        truncate table  [bronze].[crm_prd_info]
+         ---------------------------------------------
+        PRINT '>>> INSERTING DATA INTO:BRONZE.CRM_PRD_INFO';
+    ---------------------------------------------
+            BULK INSERT [bronze].[crm_prd_info]
+        FROM 'C:\Users\hp\Downloads\sql-data-warehouse-project\sql-data-warehouse-project\datasets\source_crm\prd_info.csv'
+         WITH (
+         FIRSTROW = 2 ,
+         FIELDTERMINATOR = ',',
+         TABLOCK
+         );
+      ----------
+       SET @END_TIME = GETDATE();
+                PRINT'LOAD DURATION:'+ CAST(DATEDIFF(SECOND,@START_TIME,@END_TIME)AS NVARCHAR)+'SECONDS';
+         PRINT '==============================================================================================================================================='
+
+       ---------
+        /*========================================================================================================================*/
+         ---------
+       SET @START_TIME = GETDATE();
+       ---------
+      
+       PRINT '>>> TRUNCATIAG TABLE:BRONZE.CRM_SALES_DETAILS';
+     --------------------------------------
+         truncate table [bronze].[CRM_SALES_DETIALS]
+         --------------------------------------------
+         PRINT '>>> INSERTING DATA INTO :BRONZE.CRM_SALES_DETAILS';
+    ------------------------------------------
+            BULK INSERT [bronze].[CRM_SALES_DETIALS]
+        FROM 'C:\Users\hp\Downloads\sql-data-warehouse-project\sql-data-warehouse-project\datasets\source_crm\sales_details.csv'
+         WITH (
+         FIRSTROW = 2 ,
+         FIELDTERMINATOR = ',',
+         TABLOCK
+         );
+           ---------
+       SET @END_TIME = GETDATE();
+                PRINT'LOAD DURATION:'+ CAST(DATEDIFF(SECOND,@START_TIME,@END_TIME)AS NVARCHAR)+'SECONDS';
+         PRINT '==============================================================================================================================================='
+
+       ---------
+         /*======================================================================================================================*/
+          PRINT'------------------------------------------';
+          PRINT'LOADING BRONZE  ERP TABLES';
+          PRINT'------------------------------------------';
+         /*======================================================================================================================*/
+           ---------
+       SET @START_TIME = GETDATE();
+       -------
+         PRINT '>>> TRUNCATIAG TABLE:BRONZE.ERP_CUST_AZ12';
+     --------------------------------------
+          truncate table [bronze].[ERP_CUST_AZ12]
+          --------------------------------------------
+          PRINT '>>> INSERTING DATA INTO :BRONZE.ERP_CUST_AZ12';
+    ---------------------------------------
+            BULK INSERT [bronze].[ERP_CUST_AZ12]
+        FROM 'C:\Users\hp\Downloads\sql-data-warehouse-project\sql-data-warehouse-project\datasets\source_erp\cust_AZ12.CSV'
+         WITH (
+         FIRSTROW = 2 ,
+         FIELDTERMINATOR = ',',
+         TABLOCK
+         );
+           ---------
+       SET @END_TIME = GETDATE();
+                PRINT'LOAD DURATION:'+ CAST(DATEDIFF(SECOND,@START_TIME,@END_TIME)AS NVARCHAR)+'SECONDS';
+         PRINT '==============================================================================================================================================='
+
+       ---------
+        /*======================================================================================================================*/
+          ---------
+       SET @START_TIME = GETDATE();
+       ---------
+        PRINT '>>> TRUNCATIAG TABLE:BRONZE.ERP_LOCATION';
+     ----------------------------------------------
+         truncate table [bronze].[ERP_LOCATION]
+         ------------------------------------------
+         PRINT '>>> INSERTING DATA INTO :BRONZE.ERP_LOCATION';
+    ------------------------------------------------
+             BULK INSERT [bronze].[ERP_LOCATION]
+        FROM 'C:\Users\hp\Downloads\sql-data-warehouse-project\sql-data-warehouse-project\datasets\source_erp\LOC_A101.CSV'
+         WITH (
+         FIRSTROW = 2 ,
+         FIELDTERMINATOR = ',',
+         TABLOCK
+         );
+           ---------
+       SET @END_TIME = GETDATE();
+                PRINT'LOAD DURATION:'+ CAST(DATEDIFF(SECOND,@START_TIME,@END_TIME)AS NVARCHAR)+'SECONDS';
+         PRINT '==============================================================================================================================================='
+
+       ---------
+        /*======================================================================================================================*/
+         ---------
+       SET @START_TIME = GETDATE();
+       ---------
+       PRINT '>>> TRUNCATIAG TABLE:BRONZE.ERP_PX_CAT_G1V2';
+     --------------------------------------
+         truncate table[bronze].[ERP_PX_CAT_G1V2] 
+         ------------------------------------------
+          PRINT '>>> INSERTING DATA INTO :BRONZE.ERP_PX_CAT_G1V2';  
+    ---------------------------------------
+              BULK INSERT [bronze].[ERP_PX_CAT_G1V2] 
+        FROM 'C:\Users\hp\Downloads\sql-data-warehouse-project\sql-data-warehouse-project\datasets\source_erp\PX_CAT_G1V2.CSV'
+         WITH (
+         FIRSTROW = 2 ,
+         FIELDTERMINATOR = ',',
+         TABLOCK
+         );
+           ---------
+       SET @END_TIME = GETDATE();
+                PRINT'LOAD DURATION:'+ CAST(DATEDIFF(SECOND,@START_TIME,@END_TIME)AS NVARCHAR)+'SECONDS';
+         PRINT '==============================================================================================================================================='
+
+       ---------
+/*=============================================================================================================================*/
+     END TRY 
+     BEGIN CATCH 
+        PRINT '================================'
+                PRINT 'ERROR OCCOURED DURING LOADING BRONZE LAYER'
+                PRINT 'ERROR MESSAGE'+ERROR_MESSAGE();
+                PRINT 'ERROR MESSAGE'+CAST(ERROR_NUMBER() AS NVARCHAR);
+                PRINT 'ERROR MESSAGE'+CAST(ERROR_STATE ()AS NVARCHAR)
+        PRINT '================================'
+     END CATCH 
+ END 
+ GO 
+ EXEC BRONZE.LOAD_BRONZE 
